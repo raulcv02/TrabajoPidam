@@ -45,7 +45,7 @@ public class Main {
                 system.out.println("Opción no valida.");
             }
 
-
+            case 2: {}
         }
     }
 }
