@@ -11,7 +11,18 @@ public class Main {
         System.out.println("1 Ejemplo");
         System.out.println("2 Ejemplo");
 
+
         System.out.print("\nOpcion: ");
+
+        // Esto hace que si lo que han escrito en el scanner no es un numero que se quede atascado ahi
+        while (!sc.hasNextInt()) {
+
+            System.out.println("Introduce un numero no letras");
+            sc.nextLine();
+
+            System.out.print("\nOpcion: ");
+        }
+
         int opt = sc.nextInt();
 
         switch (opt) {
