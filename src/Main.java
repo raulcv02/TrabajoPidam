@@ -1,16 +1,34 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    private static System system;
 
-    public static void main(String[] args) {
+    static void eliminarArchivo(File archivo) throws FileNotFoundException{
+        if(!archivo.exists()){
+            System.out.println("El archivo no existe");
+            throw new IllegalArgumentException("El archivo no existe");
+        } else  if(archivo.isFile()){
+            archivo.delete();
+            System.out.println("El archivo ha sido eliminado corréctamente");
+        } else  if(archivo.isDirectory()){
+            File[] archivos = archivo.listFiles();
+            for(File f : archivo.listFiles()){
+                eliminarArchivo(f);
+            }
+        }
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("######MENU######");
+
         System.out.println("1 Crear Archivo");
         System.out.println("2 Ejemplo");
+
+        System.out.println("3 Eliminar");
 
 
         System.out.print("\nOpcion: ");
@@ -27,6 +45,7 @@ public class Main {
         int opt = sc.nextInt();
         sc.nextLine();
 
+
         switch (opt) {
 
             case 1: {
@@ -37,7 +56,7 @@ public class Main {
 
             case 2: {
                 //listar directorio
-                system.out.println("Introduce la ruta del directorio: ");
+                System.out.println("Introduce la ruta del directorio: ");
                 String rutaDirectorio = sc.nextLine();
 
                 File directorio = new File(rutaDirectorio);
@@ -45,47 +64,55 @@ public class Main {
                 if (directorio.exists() && directorio.isDirectory()) {
                     String[] archivos = directorio.list();
 
-                    system.out.println("\nContenido del directorio: ");
+                    System.out.println("\nContenido del directorio: ");
                     for (String archivo : archivos) {
-                        system.out.println(archivo);
+                        System.out.println(archivo);
                     }
                 } else {
-                    system.out.println("La ruta no es un directorio válido");
+                    System.out.println("La ruta no es un directorio válido");
                 }
                 break;
             }
+
+            case 3: {
+                System.out.print("Archivo: ");
+                File file = new File(sc.nextLine());
+                eliminarArchivo(file);
+                break;
+            }
+
             default: {
-                system.out.println("Opción no valida.");
+                System.out.println("Opción no valida.");
                 break;
             }
         }
     }
 
 
-        public static void crearArchivo() {
-            Scanner sc = new Scanner(System.in);
+    public static void crearArchivo() {
+        Scanner sc = new Scanner(System.in); 
 
-            System.out.print("Introduce el nombre del archivo: ");
-            File file = new File(sc.nextLine());
-            try {
+        System.out.print("Introduce el nombre del archivo: ");
+        File file = new File(sc.nextLine());
+        try {
 
-                if (file.createNewFile()) {
+            if (file.createNewFile()) {
 
-                    System.out.println("Archivo creado correctamente");
-                }
-                else {
-
-                    System.out.println("Error al crear el archivo, el archivo ya existia");
-                }
+                System.out.println("Archivo creado correctamente");
             }
-            catch (IOException e) {
+            else {
 
-                System.out.println("Error al crear el archivo");
-                throw new RuntimeException(e);
-
-
-
+                System.out.println("Error al crear el archivo, el archivo ya existia");
             }
+        }
+        catch (IOException e) {
+
+            System.out.println("Error al crear el archivo");
+            throw new RuntimeException(e);
+
+
+
+        }
     }
 }
 
