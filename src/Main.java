@@ -1,15 +1,33 @@
-import java.io.File;
+import java.io.*;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class Main {
-    private static System system;
 
-    public static void main(String[] args) {
+    static void eliminarArchivo(File archivo) throws FileNotFoundException{
+        if(!archivo.exists()){
+            System.out.println("El archivo no existe");
+            throw new IllegalArgumentException("El archivo no existe");
+        } else  if(archivo.isFile()){
+            archivo.delete();
+            System.out.println("El archivo ha sido eliminado corréctamente");
+        } else  if(archivo.isDirectory()){
+            File[] archivos = archivo.listFiles();
+            for(File f : archivo.listFiles()){
+                eliminarArchivo(f);
+            }
+        }
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("######MENU######");
-        System.out.println("1 Ejemplo");
+
+        System.out.println("1 Crear Archivo");
         System.out.println("2 Ejemplo");
+
+        System.out.println("3 Eliminar");
 
 
         System.out.print("\nOpcion: ");
@@ -24,39 +42,100 @@ public class Main {
         }
 
         int opt = sc.nextInt();
+        sc.nextLine();
+
 
         switch (opt) {
 
             case 1: {
+
+                crearArchivo();
+                break;
+            }
+
+            case 2: {
                 //listar directorio
-                system.out.println("Introduce la ruta del directorio: ");
+                System.out.println("Introduce la ruta del directorio: ");
                 String rutaDirectorio = sc.nextLine();
 
                 File directorio = new File(rutaDirectorio);
 
                 if (directorio.exists() && directorio.isDirectory()) {
-                    String [] archivos = directorio.list();
+                    String[] archivos = directorio.list();
 
-                    system.out.println("\nContenido del directorio: ");
-                    for (String archivo : archivos){
-                        system.out.println(archivo);
+                    System.out.println("\nContenido del directorio: ");
+                    for (String archivo : archivos) {
+                        System.out.println(archivo);
                     }
                 } else {
-                    system.out.println("La ruta no es un directorio válido");
+                    System.out.println("La ruta no es un directorio válido");
                 }
                 break;
             }
 
-            case 2:{
-                system.out.println("Has seleccionado el caso 2.");
+            case 3: {
+                System.out.print("Archivo: ");
+                File file = new File(sc.nextLine());
+                eliminarArchivo(file);
                 break;
-
             }
+
+            case 4: {
+                // Escribir contenido en archivo de texto existente
+                //raul
+                System.out.println("Nombre del documento de texto: ");
+                String documento = sc.nextLine();
+
+                System.out.println("Que quieres escribir en el documento: ");
+                String texto = sc.nextLine();
+
+                try {
+                    FileWriter fw = new FileWriter(documento, true);
+                    BufferedWriter bw = new BufferedWriter(fw);
+                    bw.write(texto);
+                    bw.newLine();
+                    bw.close();
+                    System.out.println("escrito correctamente");
+                } catch (IOException e) {
+                    System.out.println("Error de escribir::" + e.getMessage());
+                }
+
+                break;
+            }
+
             default: {
-                system.out.println("Opción no valida.");
+                System.out.println("Opción no valida.");
+                break;
             }
+        }
+    }
 
-            case 2: {}
+
+    public static void crearArchivo() {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Introduce el nombre del archivo: ");
+        File file = new File(sc.nextLine());
+        try {
+
+            if (file.createNewFile()) {
+
+                System.out.println("Archivo creado correctamente");
+            }
+            else {
+
+                System.out.println("Error al crear el archivo, el archivo ya existia");
+            }
+        }
+        catch (IOException e) {
+
+            System.out.println("Error al crear el archivo");
+            throw new RuntimeException(e);
+
+
+
         }
     }
 }
+
+
