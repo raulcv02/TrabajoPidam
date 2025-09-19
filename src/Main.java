@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -8,7 +9,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("######MENU######");
-        System.out.println("1 Ejemplo");
+        System.out.println("1 Crear Archivo");
         System.out.println("2 Ejemplo");
 
 
@@ -24,10 +25,17 @@ public class Main {
         }
 
         int opt = sc.nextInt();
+        sc.nextLine();
 
         switch (opt) {
 
             case 1: {
+
+                crearArchivo();
+                break;
+            }
+
+            case 2: {
                 //listar directorio
                 system.out.println("Introduce la ruta del directorio: ");
                 String rutaDirectorio = sc.nextLine();
@@ -35,10 +43,10 @@ public class Main {
                 File directorio = new File(rutaDirectorio);
 
                 if (directorio.exists() && directorio.isDirectory()) {
-                    String [] archivos = directorio.list();
+                    String[] archivos = directorio.list();
 
                     system.out.println("\nContenido del directorio: ");
-                    for (String archivo : archivos){
+                    for (String archivo : archivos) {
                         system.out.println(archivo);
                     }
                 } else {
@@ -46,17 +54,39 @@ public class Main {
                 }
                 break;
             }
-
-            case 2:{
-                system.out.println("Has seleccionado el caso 2.");
-                break;
-
-            }
             default: {
                 system.out.println("Opción no valida.");
+                break;
             }
-
-            case 2: {}
         }
     }
+
+
+        public static void crearArchivo() {
+            Scanner sc = new Scanner(System.in);
+
+            System.out.print("Introduce el nombre del archivo: ");
+            File file = new File(sc.nextLine());
+            try {
+
+                if (file.createNewFile()) {
+
+                    System.out.println("Archivo creado correctamente");
+                }
+                else {
+
+                    System.out.println("Error al crear el archivo, el archivo ya existia");
+                }
+            }
+            catch (IOException e) {
+
+                System.out.println("Error al crear el archivo");
+                throw new RuntimeException(e);
+
+
+
+            }
+    }
 }
+
+
