@@ -1,24 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
-
-    static void eliminarArchivo(File archivo) throws FileNotFoundException{
-        if(!archivo.exists()){
-            System.out.println("El archivo no existe");
-            throw new IllegalArgumentException("El archivo no existe");
-        } else  if(archivo.isFile()){
-            archivo.delete();
-            System.out.println("El archivo ha sido eliminado corréctamente");
-        } else  if(archivo.isDirectory()){
-            File[] archivos = archivo.listFiles();
-            for(File f : archivo.listFiles()){
-                eliminarArchivo(f);
-            }
-        }
-    }
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
@@ -26,10 +12,8 @@ public class Main {
         System.out.println("######MENU######");
 
         System.out.println("1 Crear Archivo");
-        System.out.println("2 Ejemplo");
-
+        System.out.println("2 Listar Directorio");
         System.out.println("3 Eliminar");
-
 
         System.out.print("\nOpcion: ");
 
@@ -45,7 +29,6 @@ public class Main {
         int opt = sc.nextInt();
         sc.nextLine();
 
-
         switch (opt) {
 
             case 1: {
@@ -55,22 +38,8 @@ public class Main {
             }
 
             case 2: {
-                //listar directorio
-                System.out.println("Introduce la ruta del directorio: ");
-                String rutaDirectorio = sc.nextLine();
 
-                File directorio = new File(rutaDirectorio);
-
-                if (directorio.exists() && directorio.isDirectory()) {
-                    String[] archivos = directorio.list();
-
-                    System.out.println("\nContenido del directorio: ");
-                    for (String archivo : archivos) {
-                        System.out.println(archivo);
-                    }
-                } else {
-                    System.out.println("La ruta no es un directorio válido");
-                }
+                listar();
                 break;
             }
 
@@ -113,6 +82,83 @@ public class Main {
 
 
         }
+    }
+
+    static void listar() {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Introduce la ruta del directorio: ");
+        String rutaDirectorio = sc.nextLine();
+
+        File directorio = new File(rutaDirectorio);
+
+        if (directorio.isDirectory()) {
+
+            File[] archivos = ordenar(directorio.listFiles());
+
+            for (File file : archivos) {
+
+                if (file.isDirectory()) {
+
+                    System.out.println("[*] " + file.getName());
+                }
+                else {
+
+                    System.out.println("[A] " + file.getName());
+                }
+            }
+        }
+        else {
+
+            System.out.println("Ruta no valida");
+        }
+    }
+
+    static void eliminarArchivo(File archivo) throws FileNotFoundException{
+
+        if(!archivo.exists()){
+            System.out.println("El archivo no existe");
+            throw new IllegalArgumentException("El archivo no existe");
+        } else  if(archivo.isFile()){
+            archivo.delete();
+            System.out.println("El archivo ha sido eliminado corréctamente");
+        } else  if(archivo.isDirectory()){
+            File[] archivos = archivo.listFiles();
+            for(File f : archivo.listFiles()){
+                eliminarArchivo(f);
+            }
+        }
+    }
+
+    static File[] ordenar(File[] files) {
+
+        Arrays.sort(files);
+        File[] sorted = new File[files.length];
+        int contador = 0;
+
+        for (File file : files) {
+
+            if (file.isDirectory()) {
+
+                sorted[contador] = file;
+                contador++;
+            }
+        }
+
+        for (File file : files) {
+
+            if (contador == files.length) {
+
+                break;
+            }
+            if (file.isFile()) {
+
+                sorted[contador] = file;
+                contador++;
+            }
+        }
+
+        return sorted;
     }
 }
 
