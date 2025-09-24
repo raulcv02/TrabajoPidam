@@ -122,6 +122,8 @@ public class Main {
     public static void comprobarArchivo() {
         Scanner sc = new Scanner(System.in);
 
+        // todo ok
+
         System.out.print("Introduce la ruta del archivo a comprobar: ");
         File archivo = new File(sc.nextLine());
 
