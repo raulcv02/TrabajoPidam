@@ -1,5 +1,3 @@
-import org.w3c.dom.ls.LSOutput;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,6 +29,7 @@ public class Main {
         System.out.println("2 Ejemplo");
 
         System.out.println("3 Eliminar");
+        System.out.println("4 Comprobar archivo");
 
 
         System.out.print("\nOpcion: ");
@@ -87,6 +86,11 @@ public class Main {
                 System.out.println("Opción no valida.");
                 break;
             }
+
+            case 4:{
+                System.out.println("Comprobar archivo");
+                comprobarArchivo();
+            }
         }
     }
 
@@ -112,9 +116,10 @@ public class Main {
             System.out.println("Error al crear el archivo");
             throw new RuntimeException(e);
 
+
+
         }
     }
-
     public static void comprobarArchivo() {
         Scanner sc = new Scanner(System.in);
 
@@ -131,6 +136,6 @@ public class Main {
             System.out.println(" El archivo no existe.");
         }
     }
-
-
 }
+
+
