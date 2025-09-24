@@ -1,6 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 public class Main {
@@ -81,6 +79,29 @@ public class Main {
                 break;
             }
 
+            case 4: {
+                // Escribir contenido en archivo de texto existente
+                //raul
+                System.out.println("Nombre del documento de texto: ");
+                String documento = sc.nextLine();
+
+                System.out.println("Que quieres escribir en el documento: ");
+                String texto = sc.nextLine();
+
+                try {
+                    FileWriter fw = new FileWriter(documento, true);
+                    BufferedWriter bw = new BufferedWriter(fw);
+                    bw.write(texto);
+                    bw.newLine();
+                    bw.close();
+                    System.out.println("escrito correctamente");
+                } catch (IOException e) {
+                    System.out.println("Error de escribir::" + e.getMessage());
+                }
+
+                break;
+            }
+
             default: {
                 System.out.println("Opción no valida.");
                 break;
@@ -110,25 +131,10 @@ public class Main {
             System.out.println("Error al crear el archivo");
             throw new RuntimeException(e);
 
+
+
         }
     }
-
-    public static void comprobarArchivo() {
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("Introduce la ruta del archivo a comprobar: ");
-        File archivo = new File(sc.nextLine());
-
-        if (archivo.exists()) {
-            if (archivo.isFile()) {
-                System.out.println(" El archivo existe: " + archivo.getAbsolutePath());
-            } else if (archivo.isDirectory()) {
-                System.out.println(" Es un directorio: " + archivo.getAbsolutePath());
-            }
-        } else {
-            System.out.println(" El archivo no existe.");
-        }
-    }
-
-
 }
+
+
