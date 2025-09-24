@@ -116,10 +116,9 @@ public class Main {
             System.out.println("Error al crear el archivo");
             throw new RuntimeException(e);
 
-
-
         }
     }
+
     public static void comprobarArchivo() {
         Scanner sc = new Scanner(System.in);
 
@@ -136,6 +135,6 @@ public class Main {
             System.out.println(" El archivo no existe.");
         }
     }
+
+
 }
-
-
