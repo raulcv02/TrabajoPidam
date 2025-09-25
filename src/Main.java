@@ -88,7 +88,6 @@ public class Main {
                 System.out.println("Que quieres escribir en el documento: ");
                 String texto = sc.nextLine();
 
-
                 try {
                     FileWriter fw = new FileWriter(documento, true);
                     BufferedWriter bw = new BufferedWriter(fw);
