@@ -1,6 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -14,6 +12,9 @@ public class Main {
         System.out.println("1 Crear Archivo");
         System.out.println("2 Listar Directorio");
         System.out.println("3 Eliminar");
+        System.out.println("4 Comprobar archivo");
+        System.out.println("5 Escribir archivo");
+        System.out.println("6 Leer archivo");
 
         System.out.print("\nOpcion: ");
 
@@ -44,13 +45,42 @@ public class Main {
             }
 
             case 3: {
+
                 System.out.print("Archivo: ");
                 File file = new File(sc.nextLine());
-                eliminarArchivo(file);
+
+                if (comprobarArchivo(file, true)) {eliminarArchivo(file);}
+                break;
+            }
+
+            case 4: {
+
+                System.out.print("Archivo: ");
+
+                comprobarArchivo(new File(sc.nextLine()), false);
+                break;
+            }
+
+            case 5: {
+
+                System.out.print("Archivo: ");
+                File file = new File(sc.nextLine());
+
+                if (comprobarArchivo(file, true)) {escribirArchivo(file);}
+                break;
+            }
+
+            case 6: {
+
+                System.out.print("Archivo: ");
+                File file = new File(sc.nextLine());
+
+                if (comprobarArchivo(file, true)) {leerArchivo(file);}
                 break;
             }
 
             default: {
+
                 System.out.println("Opción no valida.");
                 break;
             }
@@ -58,7 +88,7 @@ public class Main {
     }
 
 
-    public static void crearArchivo() {
+    static void crearArchivo() {
         Scanner sc = new Scanner(System.in); 
 
         System.out.print("Introduce el nombre del archivo: ");
@@ -114,19 +144,19 @@ public class Main {
         }
     }
 
-    static void eliminarArchivo(File archivo) throws FileNotFoundException{
+    static void eliminarArchivo(File archivo) {
 
-        if(!archivo.exists()){
-            System.out.println("El archivo no existe");
-            throw new IllegalArgumentException("El archivo no existe");
-        } else  if(archivo.isFile()){
+        if(archivo.isFile()) {
+
             archivo.delete();
-            System.out.println("El archivo ha sido eliminado corréctamente");
-        } else  if(archivo.isDirectory()){
-            File[] archivos = archivo.listFiles();
-            for(File f : archivo.listFiles()){
+        }
+        else  if(archivo.isDirectory()) {
+
+            for(File f : archivo.listFiles()) {
                 eliminarArchivo(f);
+
             }
+            archivo.delete();
         }
     }
 
@@ -159,6 +189,77 @@ public class Main {
         }
 
         return sorted;
+    }
+
+    static boolean comprobarArchivo(File file, boolean metodo) {
+
+        if (file.exists()) {
+
+            if (metodo) {
+
+                return true;
+            }
+
+            if (file.isFile()) {
+
+                System.out.println("El archivo existe");
+            }
+            else if (file.isDirectory()) {
+
+                System.out.println("El directorio existe");
+            }
+            return true;
+        }
+        else {
+            System.out.println("El archivo no existe.");
+        }
+        return false;
+    }
+
+    static void escribirArchivo(File file) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Que quieres escribir en el documento: ");
+
+        String texto = "";
+
+
+        while (true) {
+
+            String linea = sc.nextLine();
+            if (linea.equals("")) {
+
+                break;
+            }
+            texto += linea + "\n";
+
+        }
+
+        try {
+
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            bw.write(texto);
+            bw.newLine();
+
+            bw.close();
+            System.out.println("Escrito correctamente");
+        }
+        catch (IOException e) {
+
+            System.out.println("Error de escribir:" + e.getMessage());
+        }
+    }
+
+    static void leerArchivo(File file) throws FileNotFoundException {
+        Scanner texto = new Scanner(file);
+
+        while (texto.hasNextLine()) {
+
+            System.out.println(texto.nextLine());
+        }
+        texto.close();
     }
 }
 
