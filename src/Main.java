@@ -1,24 +1,8 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
-
-    static void eliminarArchivo(File archivo) throws FileNotFoundException{
-        if(!archivo.exists()){
-            System.out.println("El archivo no existe");
-            throw new IllegalArgumentException("El archivo no existe");
-        } else  if(archivo.isFile()){
-            archivo.delete();
-            System.out.println("El archivo ha sido eliminado corréctamente");
-        } else  if(archivo.isDirectory()){
-            File[] archivos = archivo.listFiles();
-            for(File f : archivo.listFiles()){
-                eliminarArchivo(f);
-            }
-        }
-    }
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
@@ -26,11 +10,11 @@ public class Main {
         System.out.println("######MENU######");
 
         System.out.println("1 Crear Archivo");
-        System.out.println("2 Ejemplo");
-
+        System.out.println("2 Listar Directorio");
         System.out.println("3 Eliminar");
         System.out.println("4 Comprobar archivo");
-
+        System.out.println("5 Escribir archivo");
+        System.out.println("6 Leer archivo");
 
         System.out.print("\nOpcion: ");
 
@@ -43,11 +27,8 @@ public class Main {
             System.out.print("\nOpcion: ");
         }
 
-
-
         int opt = sc.nextInt();
         sc.nextLine();
-
 
         switch (opt) {
 
@@ -58,47 +39,57 @@ public class Main {
             }
 
             case 2: {
-                //listar directorio
-                System.out.println("Introduce la ruta del directorio: ");
-                String rutaDirectorio = sc.nextLine();
 
-                File directorio = new File(rutaDirectorio);
-
-                if (directorio.exists() && directorio.isDirectory()) {
-                    String[] archivos = directorio.list();
-
-                    System.out.println("\nContenido del directorio: ");
-                    for (String archivo : archivos) {
-                        System.out.println(archivo);
-                    }
-                } else {
-                    System.out.println("La ruta no es un directorio válido");
-                }
+                listar();
                 break;
             }
 
             case 3: {
+
                 System.out.print("Archivo: ");
                 File file = new File(sc.nextLine());
-                eliminarArchivo(file);
+
+                if (comprobarArchivo(file, true)) {eliminarArchivo(file);}
+                break;
+            }
+
+            case 4: {
+
+                System.out.print("Archivo: ");
+
+                comprobarArchivo(new File(sc.nextLine()), false);
+                break;
+            }
+
+            case 5: {
+
+                System.out.print("Archivo: ");
+                File file = new File(sc.nextLine());
+
+                if (comprobarArchivo(file, true)) {escribirArchivo(file);}
+                break;
+            }
+
+            case 6: {
+
+                System.out.print("Archivo: ");
+                File file = new File(sc.nextLine());
+
+                if (comprobarArchivo(file, true)) {leerArchivo(file);}
                 break;
             }
 
             default: {
+
                 System.out.println("Opción no valida.");
                 break;
-            }
-
-            case 4:{
-                System.out.println("Comprobar archivo");
-                comprobarArchivo();
             }
         }
     }
 
 
-    public static void crearArchivo() {
-        Scanner sc = new Scanner(System.in);
+    static void crearArchivo() {
+        Scanner sc = new Scanner(System.in); 
 
         System.out.print("Introduce el nombre del archivo: ");
         File file = new File(sc.nextLine());
@@ -118,27 +109,158 @@ public class Main {
             System.out.println("Error al crear el archivo");
             throw new RuntimeException(e);
 
+
+
         }
     }
 
-    public static void comprobarArchivo() {
+    static void listar() {
         Scanner sc = new Scanner(System.in);
 
-        // todo ok
+        System.out.print("Introduce la ruta del directorio: ");
+        String rutaDirectorio = sc.nextLine();
 
-        System.out.print("Introduce la ruta del archivo a comprobar: ");
-        File archivo = new File(sc.nextLine());
+        File directorio = new File(rutaDirectorio);
 
-        if (archivo.exists()) {
-            if (archivo.isFile()) {
-                System.out.println(" El archivo existe: " + archivo.getAbsolutePath());
-            } else if (archivo.isDirectory()) {
-                System.out.println(" Es un directorio: " + archivo.getAbsolutePath());
+        if (directorio.isDirectory()) {
+
+            File[] archivos = ordenar(directorio.listFiles());
+
+            for (File file : archivos) {
+
+                if (file.isDirectory()) {
+
+                    System.out.println("[*] " + file.getName());
+                }
+                else {
+
+                    System.out.println("[A] " + file.getName());
+                }
             }
-        } else {
-            System.out.println(" El archivo no existe.");
+        }
+        else {
+
+            System.out.println("Ruta no valida");
         }
     }
 
+    static void eliminarArchivo(File archivo) {
 
+        if(archivo.isFile()) {
+
+            archivo.delete();
+        }
+        else  if(archivo.isDirectory()) {
+
+            for(File f : archivo.listFiles()) {
+                eliminarArchivo(f);
+
+            }
+            archivo.delete();
+        }
+    }
+
+    static File[] ordenar(File[] files) {
+
+        Arrays.sort(files);
+        File[] sorted = new File[files.length];
+        int contador = 0;
+
+        for (File file : files) {
+
+            if (file.isDirectory()) {
+
+                sorted[contador] = file;
+                contador++;
+            }
+        }
+
+        for (File file : files) {
+
+            if (contador == files.length) {
+
+                break;
+            }
+            if (file.isFile()) {
+
+                sorted[contador] = file;
+                contador++;
+            }
+        }
+
+        return sorted;
+    }
+
+    static boolean comprobarArchivo(File file, boolean metodo) {
+
+        if (file.exists()) {
+
+            if (metodo) {
+
+                return true;
+            }
+
+            if (file.isFile()) {
+
+                System.out.println("El archivo existe");
+            }
+            else if (file.isDirectory()) {
+
+                System.out.println("El directorio existe");
+            }
+            return true;
+        }
+        else {
+            System.out.println("El archivo no existe.");
+        }
+        return false;
+    }
+
+    static void escribirArchivo(File file) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Que quieres escribir en el documento: ");
+
+        String texto = "";
+
+
+        while (true) {
+
+            String linea = sc.nextLine();
+            if (linea.equals("")) {
+
+                break;
+            }
+            texto += linea + "\n";
+
+        }
+
+        try {
+
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            bw.write(texto);
+            bw.newLine();
+
+            bw.close();
+            System.out.println("Escrito correctamente");
+        }
+        catch (IOException e) {
+
+            System.out.println("Error de escribir:" + e.getMessage());
+        }
+    }
+
+    static void leerArchivo(File file) throws FileNotFoundException {
+        Scanner texto = new Scanner(file);
+
+        while (texto.hasNextLine()) {
+
+            System.out.println(texto.nextLine());
+        }
+        texto.close();
+    }
 }
+
+
